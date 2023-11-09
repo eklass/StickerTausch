@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sticker-Tausch</title>
+</head>
+<body>
+    <h1>Sticker-Tausch</h1>
+
+    <img src="https://cdn-az.allevents.in/events5/banners/c9bfe45c49f187676123d5756265ce4f0d1dc77456b0f0ec68dca517380c1b9e-rimg-w960-h501-gmir.jpg?v=1698342865" alt="Sticker-Tausch-Logo" width="200" height="100">
+
+    <div style="display: flex; flex-direction: row;">
+        <div style="flex: 1;">
+            <h2>Ich suche</h2>
+            <input type="text" id="meSearch" placeholder="Gesuchte Sticker (Komma getrennt)">
+        </div>
+
+        <div style="flex: 1;">
+            <h2>Mein Tauschpartner sucht</h2>
+            <input type="text" id="partnerSearch" placeholder="Gesuchte Sticker (Komma getrennt)">
+        </div>
+    </div>
+
+    <div style="display: flex; flex-direction: row;">
+        <div style="flex: 1;">
+            <h2>Ich habe doppelt</h2>
+            <input type="text" id="myDuplicates" placeholder="Meine doppelten Sticker (Komma getrennt)">
+        </div>
+
+        <div style="flex: 1;">
+            <h2>Mein Tauschpartner hat doppelt</h2>
+            <input type="text" id="partnerDuplicates" placeholder="Doppelte Sticker deines Tauschpartners (Komma getrennt)">
+        </div>
+    </div>
+
+    <div>
+        <h2>Ergebnis</h2>
+        <div id="result"></div>
+    </div>
+
+    <div>
+        <h2>Übrig gebliebene Sticker</h2>
+        <div id="remaining"></div>
+    </div>
+
+    <script>
+        function calculateMatches() {
+            const meSearch = parseInput(document.getElementById('meSearch').value);
+            const partnerSearch = parseInput(document.getElementById('partnerSearch').value);
+            const myDuplicates = parseInput(document.getElementById('myDuplicates').value);
+            const partnerDuplicates = parseInput(document.getElementById('partnerDuplicates').value);
+
+            const commonSearch = meSearch.filter(value => partnerDuplicates.includes(value));
+            const commonDuplicates = partnerSearch.filter(value => myDuplicates.includes(value));
+
+            // Ergebnis für gesuchte Sticker
+            const resultSearch = `Gesuchte Sticker, die dein Tauschpartner doppelt hat (${new Set(commonSearch).size} Sticker):<br>${Array.from(new Set(commonSearch)).join(', ')}<br><br>`;
+
+            // Ergebnis für gesuchte Sticker deines Tauschpartners
+            const resultDuplicates = `Gesuchte Sticker deines Tauschpartners, die du doppelt hast (${new Set(commonDuplicates).size} Sticker):<br>${Array.from(new Set(commonDuplicates)).join(', ')}`;
+
+            document.getElementById('result').innerHTML = resultSearch + resultDuplicates;
+
+            // Berechne die übrig gebliebenen Sticker
+            const remainingStickers = myDuplicates.slice();
+
+            for (const sticker of commonDuplicates) {
+                const index = remainingStickers.indexOf(sticker);
+
+                if (index !== -1) {
+                    remainingStickers.splice(index, 1);
+                }
+            }
+
+            const remainingResult = `Übrig gebliebene Sticker nach dem Tausch (${remainingStickers.length} Sticker):<br>${remainingStickers.join(', ')}`;
+
+            document.getElementById('remaining').innerHTML = remainingResult;
+        }
+
+        function parseInput(input) {
+            // Teile den Eingabetext basierend auf Komma, Komma mit Leerzeichen oder Leerzeichen.
+            return input.split(/,|, | /).map(item => item.trim()).filter(item => item !== "");
+        }
+
+        // Das Ergebnis wird berechnet, wenn eine der Eingaben geändert wird.
+        document.getElementById('meSearch').addEventListener('input', calculateMatches);
+        document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
+        document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
+        document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
+    </script>
+</body>
+</html>

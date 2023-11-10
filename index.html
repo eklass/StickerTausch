@@ -163,10 +163,18 @@
         function updateShareLink() {
             const currentURL = new URL(window.location.href);
 
-            currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
-            currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
-            currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
-            currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
+            // Überprüfe, ob die Eingabefelder leer sind, bevor der Link aktualisiert wird
+            if (document.getElementById('meSearch').value === '' &&
+                document.getElementById('partnerSearch').value === '' &&
+                document.getElementById('myDuplicates').value === '' &&
+                document.getElementById('partnerDuplicates').value === '') {
+                currentURL.search = ''; // Lösche alle Parameter, wenn alle Eingabefelder leer sind
+            } else {
+                currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
+                currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
+                currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
+                currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
+            }
 
             document.getElementById('shareLink').value = currentURL.href;
 

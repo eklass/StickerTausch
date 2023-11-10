@@ -34,7 +34,10 @@
         }
 
         // Führe die Funktion zum Setzen der Werte aus, wenn die Seite geladen wird
-        window.onload = setFieldValues;
+        window.onload = function() {
+            setFieldValues();
+            updateShareLink(); // Füge diese Zeile hinzu, um den geteilten Link zu initialisieren
+        };
     </script>
 
     <div style="display: flex; flex-direction: row;">

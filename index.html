@@ -35,14 +35,6 @@
 
         // Führe die Funktion zum Setzen der Werte aus, wenn die Seite geladen wird
         window.onload = setFieldValues;
-
-        // Funktion zum Kopieren des Links in die Zwischenablage
-        function copyLink() {
-            const linkInput = document.getElementById('linkInput');
-            linkInput.select();
-            document.execCommand('copy');
-            alert('Link wurde in die Zwischenablage kopiert!');
-        }
     </script>
 
     <div style="display: flex; flex-direction: row;">
@@ -84,16 +76,9 @@
         <div id="stillSearching"></div>
     </div>
 
-    <!-- Anzeige des Links und Kopier-Button -->
-    <div>
-        <h2>Link zum Teilen</h2>
-        <input type="text" id="linkInput" style="width: 80%;" readonly>
-        <button onclick="copyLink()">Copy Link</button>
-    </div>
-
     <script>
         function calculateMatches() {
-			const meSearch = parseInput(document.getElementById('meSearch').value);
+            const meSearch = parseInput(document.getElementById('meSearch').value);
             const partnerSearch = parseInput(document.getElementById('partnerSearch').value);
             const myDuplicates = parseInput(document.getElementById('myDuplicates').value);
             const partnerDuplicates = parseInput(document.getElementById('partnerDuplicates').value);
@@ -122,31 +107,54 @@
             document.getElementById('result').innerHTML = resultSearch + '<br><br>' + resultDuplicates;
             document.getElementById('remaining').innerHTML = remainingResult;
             document.getElementById('stillSearching').innerHTML = stillSearchingResult;
-            // Aktualisiere den Link beim Berechnen der Übereinstimmungen
-            updateShareLink();
         }
 
-        function updateShareLink() {
-            const meSearchValue = encodeURIComponent(document.getElementById('meSearch').value);
-            const partnerSearchValue = encodeURIComponent(document.getElementById('partnerSearch').value);
-            const myDuplicatesValue = encodeURIComponent(document.getElementById('myDuplicates').value);
-            const partnerDuplicatesValue = encodeURIComponent(document.getElementById('partnerDuplicates').value);
-
-            const shareLink = `${window.location.origin}${window.location.pathname}?meSearch=${meSearchValue}&partnerSearch=${partnerSearchValue}&myDuplicates=${myDuplicatesValue}&partnerDuplicates=${partnerDuplicatesValue}`;
-            document.getElementById('linkInput').value = shareLink;
+        function resetFields() {
+            document.getElementById('meSearch').value = '';
+            document.getElementById('partnerSearch').value = '';
+            document.getElementById('myDuplicates').value = '';
+            document.getElementById('partnerDuplicates').value = '';
+            calculateMatches();
         }
 
-        // Füge die Event Listener für die Input-Felder hinzu
+        function parseInput(input) {
+            return input.split(/,|, | /).map(item => item.trim()).filter(item => item !== "");
+        }
+
+        function groupAndDisplay(description, numbers) {
+            const groupedNumbers = {};
+        
+            for (const number of numbers) {
+                const block = Math.floor(number / 100);
+                if (!groupedNumbers[block]) {
+                    groupedNumbers[block] = [];
+                }
+                groupedNumbers[block].push(number);
+            }
+        
+            const result = [];
+            let totalStickerCount = 0;
+        
+            for (const key in groupedNumbers) {
+                const stickerList = groupedNumbers[key].join(', ');
+                result.push(stickerList);
+                totalStickerCount += groupedNumbers[key].length;
+            }
+        
+            const descriptionString = `${description} (${totalStickerCount} Sticker):`;
+            result.unshift(descriptionString);
+        
+            if (totalStickerCount > 0) {
+                return result.join('<br>');
+            } else {
+                return `${description} (0 Sticker):`;
+            }
+        }
+
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
         document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
         document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
-
-        // Aktualisiere den Link beim Laden der Seite
-        window.onload = function () {
-            setFieldValues();
-            updateShareLink();
-        };
     </script>
 </body>
 </html>

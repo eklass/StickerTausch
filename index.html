@@ -10,6 +10,33 @@
 
     <br><br>Eingabe zurücksetzen<br><button onclick="resetFields()">clear</button>
     <br><br>
+
+    <!-- Füge die Parameter für die Eingabefelder hinzu -->
+    <script>
+        // Funktion zum Extrahieren von Parametern aus der URL
+        function getParameterByName(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        // Funktion zum Setzen der Eingabefeldwerte basierend auf den Parametern
+        function setFieldValues() {
+            document.getElementById('meSearch').value = getParameterByName('meSearch') || '';
+            document.getElementById('partnerSearch').value = getParameterByName('partnerSearch') || '';
+            document.getElementById('myDuplicates').value = getParameterByName('myDuplicates') || '';
+            document.getElementById('partnerDuplicates').value = getParameterByName('partnerDuplicates') || '';
+            calculateMatches();
+        }
+
+        // Führe die Funktion zum Setzen der Werte aus, wenn die Seite geladen wird
+        window.onload = setFieldValues;
+    </script>
+
     <div style="display: flex; flex-direction: row;">
         <div style="flex: 1;">
             <h2>Ich suche</h2>
@@ -49,14 +76,6 @@
         <div id="stillSearching"></div>
     </div>
 
-    <div>
-        <h2>Teile diesen Link:</h2>
-        <div id="shareLinkContainer">
-            <input type="text" id="shareLinkInput" readonly>
-            <button onclick="copyShareLink()">Kopieren</button>
-        </div>
-    </div>
-
     <script>
         function calculateMatches() {
             const meSearch = parseInput(document.getElementById('meSearch').value);
@@ -88,9 +107,6 @@
             document.getElementById('result').innerHTML = resultSearch + '<br><br>' + resultDuplicates;
             document.getElementById('remaining').innerHTML = remainingResult;
             document.getElementById('stillSearching').innerHTML = stillSearchingResult;
-
-            // Nach der Berechnung auch den Link aktualisieren
-            updateShareLink();
         }
 
         function resetFields() {
@@ -135,33 +151,10 @@
             }
         }
 
-        // Hier füge die folgenden Funktionen für die Link-Funktionalität hinzu
-
-        function updateShareLink() {
-            const sessionID = getParameterByName('session');
-            const shareLinkInput = document.getElementById('shareLinkInput');
-            shareLinkInput.value = window.location.origin + window.location.pathname + `?session=${sessionID || generateSessionID()}`;
-        }
-
-        function copyShareLink() {
-            const shareLinkInput = document.getElementById('shareLinkInput');
-            shareLinkInput.select();
-            document.execCommand('copy');
-        }
-
-        // Hier geht der Rest deines Codes weiter
-
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
         document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
         document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
-
-        // Initialisierung beim Laden der Seite
-        window.addEventListener('load', () => {
-            calculateMatches();
-            updateShareLink();
-        });
-
     </script>
 </body>
 </html>

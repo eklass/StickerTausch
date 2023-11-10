@@ -75,6 +75,12 @@
         <h2>Noch gesuchte Sticker</h2>
         <div id="stillSearching"></div>
     </div>
+    
+    <div>
+        <h2>Generierter Link</h2>
+        <input type="text" id="generatedLink" readonly style="width: 70%;" placeholder="Generierter Link wird hier angezeigt">
+        <button onclick="copyGeneratedLink()">Kopieren</button>
+    </div>
 
     <script>
         function calculateMatches() {
@@ -151,10 +157,62 @@
             }
         }
 
-        document.getElementById('meSearch').addEventListener('input', calculateMatches);
-        document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
-        document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
-        document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
+    // Füge die generateLink-Funktion zu den EventListenern hinzu
+    document.getElementById('meSearch').addEventListener('input', function() {
+        calculateMatches();
+        generateLink();
+    });
+    document.getElementById('partnerSearch').addEventListener('input', function() {
+        calculateMatches();
+        generateLink();
+    });
+    document.getElementById('myDuplicates').addEventListener('input', function() {
+        calculateMatches();
+        generateLink();
+    });
+    document.getElementById('partnerDuplicates').addEventListener('input', function() {
+        calculateMatches();
+        generateLink();
+    });
+        
+// Funktion zum Generieren und Anzeigen des Links
+function generateLink() {
+    const meSearchValue = encodeURIComponent(document.getElementById('meSearch').value || '');
+
+    const partnerSearchValue = encodeURIComponent(document.getElementById('partnerSearch').value || '');
+    const myDuplicatesValue = encodeURIComponent(document.getElementById('myDuplicates').value || '');
+    const partnerDuplicatesValue = encodeURIComponent(document.getElementById('partnerDuplicates').value || '');
+
+    const generatedLink = `https://test.github.io/StickerTausch/?meSearch=${meSearchValue}&partnerSearch=${partnerSearchValue}&myDuplicates=${myDuplicatesValue}&partnerDuplicates=${partnerDuplicatesValue}`;
+
+    document.getElementById('generatedLink').value = generatedLink;
+}
+
+// Hilfsfunktion zum Kopieren des generierten Links
+function copyGeneratedLink() {
+    const generatedLinkField = document.getElementById('generatedLink');
+    generatedLinkField.select();
+    document.execCommand('copy');
+}
+
+// Hilfsfunktion zum Abrufen des Werts eines Eingabefelds
+function getInputValue(elementId) {
+    return document.getElementById(elementId).value.trim();
+}
+
+
+// Funktion zum Kopieren des generierten Links
+function copyGeneratedLink() {
+    const generatedLinkField = document.getElementById('generatedLink');
+    generatedLinkField.select();
+    document.execCommand('copy');
+}
+
+// Führe die Funktion zum Generieren des Links aus, wenn die Seite geladen wird
+window.onload = function () {
+    setFieldValues();
+    generateLink();
+};
     </script>
 </body>
 </html>

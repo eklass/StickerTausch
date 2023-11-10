@@ -151,10 +151,55 @@
             }
         }
 
+    	// Funktion zum Aktualisieren der URL-Parameter
+    	function updateURLParameters() {
+    	    const meSearch = encodeURIComponent(document.getElementById('meSearch').value);
+    	    const partnerSearch = encodeURIComponent(document.getElementById('partnerSearch').value);
+    	    const myDuplicates = encodeURIComponent(document.getElementById('myDuplicates').value);
+    	    const partnerDuplicates = encodeURIComponent(document.getElementById('partnerDuplicates').value);
+	
+    	    const urlParams = `?meSearch=${meSearch}&partnerSearch=${partnerSearch}&myDuplicates=${myDuplicates}&partnerDuplicates=${partnerDuplicates}`;
+	
+    	    // Aktualisiere die URL
+    	    window.history.replaceState({}, '', `${window.location.pathname}${urlParams}`);
+	
+    	    // Aktualisiere den Link und den Copy-Button
+    	    updateLinkAndButton();
+    	}
+	
+    	// Funktion zum Aktualisieren des Links und des Copy-Buttons
+    	function updateLinkAndButton() {
+    	    const link = document.getElementById('shareLink');
+    	    const copyButton = document.getElementById('copyButton');
+	
+    	    const currentURL = window.location.href;
+	
+    	    link.value = currentURL;
+	
+    	    // Aktiviere das Clipboard.js-Kopieren beim Klick auf den Button
+    	    copyButton.setAttribute('data-clipboard-text', currentURL);
+	
+    	    // Zeige den Link und den Copy-Button an
+    	    link.style.display = 'block';
+    	    copyButton.style.display = 'block';
+    	}
+	
+    	// Füge den Link und den Copy-Button zum HTML hinzu
+    	document.write('<input type="text" id="shareLink" style="display: none;"><button id="copyButton" data-clipboard-target="#shareLink" style="display: none;">Copy Link</button>');
+
+
+	    // Aktiviere Clipboard.js
+    	new ClipboardJS('#copyButton');
+
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
         document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
         document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
+        
+        window.onload = function () {
+        	setFieldValues();
+	        updateLinkAndButton();
+    	};
     </script>
 </body>
 </html>

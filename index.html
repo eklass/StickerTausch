@@ -160,16 +160,19 @@
         }
         
     // Funktion zum Aktualisieren des Links basierend auf den aktuellen Eingabewerten
-    function updateShareLink() {
-        const currentURL = new URL(window.location.href);
+        function updateShareLink() {
+            const currentURL = new URL(window.location.href);
 
-        currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
-        currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
-        currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
-        currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
+            currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
+            currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
+            currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
+            currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
 
-        document.getElementById('shareLink').value = currentURL.href;
-    }
+            document.getElementById('shareLink').value = currentURL.href;
+
+            // Aktualisiere auch die Ergebnisse, nachdem der Link aktualisiert wurde
+            calculateMatches();
+        }
 
     // Funktion zum Kopieren des Links in die Zwischenablage
     function copyLink() {

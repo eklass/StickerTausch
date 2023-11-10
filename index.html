@@ -8,9 +8,8 @@
 
     <img src="https://cdn-az.allevents.in/events5/banners/c9bfe45c49f187676123d5756265ce4f0d1dc77456b0f0ec68dca517380c1b9e-rimg-w960-h501-gmir.jpg?v=1698342865" alt="Sticker-Tausch-Logo" width="200" height="100">
 
-
-<br><br>Eingabe zurücksetzen<br><button onclick="resetFields()">clear</button>
-<br><br>
+    <br><br>Eingabe zurücksetzen<br><button onclick="resetFields()">clear</button>
+    <br><br>
     <div style="display: flex; flex-direction: row;">
         <div style="flex: 1;">
             <h2>Ich suche</h2>
@@ -35,8 +34,6 @@
         </div>
     </div>
 
-
-
     <div>
         <h2>Ergebnis</h2>
         <div id="result"></div>
@@ -50,6 +47,14 @@
     <div>
         <h2>Noch gesuchte Sticker</h2>
         <div id="stillSearching"></div>
+    </div>
+
+    <div>
+        <h2>Teile diesen Link:</h2>
+        <div id="shareLinkContainer">
+            <input type="text" id="shareLinkInput" readonly>
+            <button onclick="copyShareLink()">Kopieren</button>
+        </div>
     </div>
 
     <script>
@@ -83,6 +88,9 @@
             document.getElementById('result').innerHTML = resultSearch + '<br><br>' + resultDuplicates;
             document.getElementById('remaining').innerHTML = remainingResult;
             document.getElementById('stillSearching').innerHTML = stillSearchingResult;
+
+            // Nach der Berechnung auch den Link aktualisieren
+            updateShareLink();
         }
 
         function resetFields() {
@@ -127,46 +135,31 @@
             }
         }
 
+        // Hier füge die folgenden Funktionen für die Link-Funktionalität hinzu
+
+        function updateShareLink() {
+            const sessionID = getSessionID();
+            const shareLinkInput = document.getElementById('shareLinkInput');
+            shareLinkInput.value = window.location.origin + window.location.pathname + `?session=${sessionID}`;
+        }
+
+        function copyShareLink() {
+            const shareLinkInput = document.getElementById('shareLinkInput');
+            shareLinkInput.select();
+            document.execCommand('copy');
+        }
+
+        // Hier geht der Rest deines Codes weiter
+
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
         document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
         document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
-        
-        function getSessionID() {
-            return localStorage.getItem('sessionID') || generateSessionID();
-        }
 
-        function generateSessionID() {
-            return Math.random().toString(36).substring(2, 15);
-        }
-
-        // Aktualisiere die URL mit der Session-ID
-        function updateURL(sessionID) {
-            const newURL = window.location.origin + window.location.pathname + `?session=${sessionID}`;
-            window.history.replaceState({}, document.title, newURL);
-        }
-
-        // Lade den Zustand basierend auf der Session-ID
-        function loadStateFromServer(sessionID) {
-            // Hier könntest du serverseitige Logik implementieren, um den Zustand zu laden
-            // Für dieses Beispiel speichern wir die Session-ID im Local Storage
-            localStorage.setItem('sessionID', sessionID);
-
-            // Hier kannst du den Zustand aktualisieren, wenn du möchtest
-            calculateMatches();
-        }
-
-        // Füge dies am Anfang deines Scripts hinzu, um den Zustand beim Laden zu überprüfen
+        // Initialisierung beim Laden der Seite
         window.addEventListener('load', () => {
-            const sessionID = getParameterByName('session');
-            if (sessionID) {
-                loadStateFromServer(sessionID);
-            } else {
-                // Wenn keine Session-ID in der URL vorhanden ist, generiere eine neue
-                const newSessionID = generateSessionID();
-                updateURL(newSessionID);
-                loadStateFromServer(newSessionID);
-            }
+            calculateMatches();
+            updateShareLink();
         });
 
     </script>

@@ -138,9 +138,9 @@
         // Hier füge die folgenden Funktionen für die Link-Funktionalität hinzu
 
         function updateShareLink() {
-            const sessionID = getSessionID();
+            const sessionID = getParameterByName('session');
             const shareLinkInput = document.getElementById('shareLinkInput');
-            shareLinkInput.value = window.location.origin + window.location.pathname + `?session=${sessionID}`;
+            shareLinkInput.value = window.location.origin + window.location.pathname + `?session=${sessionID || generateSessionID()}`;
         }
 
         function copyShareLink() {

@@ -75,6 +75,14 @@
         <h2>Noch gesuchte Sticker</h2>
         <div id="stillSearching"></div>
     </div>
+    
+    <div>
+    	<h2>Link teilen</h2>
+    	<div>
+    	    <input type="text" id="shareLink" readonly>
+    	    <button onclick="copyLink()">Kopieren</button>
+    	</div>
+	</div>
 
     <script>
         function calculateMatches() {
@@ -150,6 +158,26 @@
                 return `${description} (0 Sticker):`;
             }
         }
+        
+            // Funktion zum Aktualisieren des Links basierend auf den aktuellen Eingabewerten
+    	function updateShareLink() {
+    	    const currentURL = new URL(window.location.href);
+	
+    	    currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
+    	    currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
+    	    currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
+    	    currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
+	
+    	    document.getElementById('shareLink').value = currentURL.href;
+    	}
+	
+    	// Funktion zum Kopieren des Links in die Zwischenablage
+    	function copyLink() {
+    	    const shareLinkInput = document.getElementById('shareLink');
+    	    shareLinkInput.select();
+    	    document.execCommand('copy');
+    	    alert('Link wurde kopiert!');
+    	}
 
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);

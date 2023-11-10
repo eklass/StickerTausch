@@ -34,10 +34,7 @@
         }
 
         // Führe die Funktion zum Setzen der Werte aus, wenn die Seite geladen wird
-        window.onload = function() {
-            setFieldValues();
-            updateShareLink(); // Füge diese Zeile hinzu, um den geteilten Link zu initialisieren
-        };
+        window.onload = setFieldValues;
     </script>
 
     <div style="display: flex; flex-direction: row;">
@@ -78,14 +75,6 @@
         <h2>Noch gesuchte Sticker</h2>
         <div id="stillSearching"></div>
     </div>
-    
-    <div>
-    	<h2>Link teilen</h2>
-    	<div>
-    	    <input type="text" id="shareLink" readonly>
-    	    <button onclick="copyLink()">Kopieren</button>
-    	</div>
-	</div>
 
     <script>
         function calculateMatches() {
@@ -161,47 +150,11 @@
                 return `${description} (0 Sticker):`;
             }
         }
-        
-    // Funktion zum Aktualisieren des Links basierend auf den aktuellen Eingabewerten
-        function updateShareLink() {
-            const currentURL = new URL(window.location.href);
 
-            // Überprüfe, ob die Eingabefelder leer sind, bevor der Link aktualisiert wird
-            if (document.getElementById('meSearch').value === '' &&
-                document.getElementById('partnerSearch').value === '' &&
-                document.getElementById('myDuplicates').value === '' &&
-                document.getElementById('partnerDuplicates').value === '') {
-                currentURL.search = ''; // Lösche alle Parameter, wenn alle Eingabefelder leer sind
-            } else {
-                currentURL.searchParams.set('meSearch', document.getElementById('meSearch').value);
-                currentURL.searchParams.set('partnerSearch', document.getElementById('partnerSearch').value);
-                currentURL.searchParams.set('myDuplicates', document.getElementById('myDuplicates').value);
-                currentURL.searchParams.set('partnerDuplicates', document.getElementById('partnerDuplicates').value);
-            }
-
-            document.getElementById('shareLink').value = currentURL.href;
-
-            // Aktualisiere auch die Ergebnisse, nachdem der Link aktualisiert wurde
-            calculateMatches();
-        }
-
-    // Funktion zum Kopieren des Links in die Zwischenablage
-    function copyLink() {
-        const shareLinkInput = document.getElementById('shareLink');
-        shareLinkInput.select();
-        shareLinkInput.setSelectionRange(0, 99999); /* For mobile devices */
-        document.execCommand('copy');
-        alert('Link wurde kopiert!');
-    }
-
-    // Füge Event-Listener hinzu, um den Link bei jeder Änderung in den Eingabefeldern zu aktualisieren
-    document.getElementById('meSearch').addEventListener('input', updateShareLink);
-    document.getElementById('partnerSearch').addEventListener('input', updateShareLink);
-    document.getElementById('myDuplicates').addEventListener('input', updateShareLink);
-    document.getElementById('partnerDuplicates').addEventListener('input', updateShareLink);
-
-    // Führe die Funktion zum Setzen des initialen Links aus, wenn die Seite geladen wird
-    window.onload = updateShareLink;
-</script>
+        document.getElementById('meSearch').addEventListener('input', calculateMatches);
+        document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
+        document.getElementById('myDuplicates').addEventListener('input', calculateMatches);
+        document.getElementById('partnerDuplicates').addEventListener('input', calculateMatches);
+    </script>
 </body>
 </html>

@@ -11,32 +11,6 @@
     <br><br>Eingabe zurücksetzen<br><button onclick="resetFields()">clear</button>
     <br><br>
 
-    <!-- Füge die Parameter für die Eingabefelder hinzu -->
-    <script>
-        // Funktion zum Extrahieren von Parametern aus der URL
-        function getParameterByName(name, url) {
-            if (!url) url = window.location.href;
-            name = name.replace(/[\[\]]/g, "\\$&");
-            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-                results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        // Funktion zum Setzen der Eingabefeldwerte basierend auf den Parametern
-        function setFieldValues() {
-            document.getElementById('meSearch').value = getParameterByName('meSearch') || '';
-            document.getElementById('partnerSearch').value = getParameterByName('partnerSearch') || '';
-            document.getElementById('myDuplicates').value = getParameterByName('myDuplicates') || '';
-            document.getElementById('partnerDuplicates').value = getParameterByName('partnerDuplicates') || '';
-            calculateMatches();
-        }
-
-        // Führe die Funktion zum Setzen der Werte aus, wenn die Seite geladen wird
-        window.onload = setFieldValues;
-    </script>
-
     <div style="display: flex; flex-direction: row;">
         <div style="flex: 1;">
             <h2>Ich suche</h2>
@@ -74,6 +48,13 @@
     <div>
         <h2>Noch gesuchte Sticker</h2>
         <div id="stillSearching"></div>
+    </div>
+
+    <!-- Hinzugefügter Code für den Teilen-Link -->
+    <div>
+        <h2>Teilen</h2>
+        <button onclick="generateShareLink()">Teilen</button>
+        <div id="shareLink"></div>
     </div>
 
     <script>
@@ -150,6 +131,19 @@
                 return `${description} (0 Sticker):`;
             }
         }
+        
+                // Funktion zum Generieren des Teilen-Links
+        function generateShareLink() {
+            const meSearch = encodeURIComponent(document.getElementById('meSearch').value);
+            const partnerSearch = encodeURIComponent(document.getElementById('partnerSearch').value);
+            const myDuplicates = encodeURIComponent(document.getElementById('myDuplicates').value);
+            const partnerDuplicates = encodeURIComponent(document.getElementById('partnerDuplicates').value);
+
+            const shareLink = `${window.location.href}?meSearch=${meSearch}&partnerSearch=${partnerSearch}&myDuplicates=${myDuplicates}&partnerDuplicates=${partnerDuplicates}`;
+
+            document.getElementById('shareLink').innerHTML = `<p>Kopiere diesen Link zum Teilen: <a href="${shareLink}" target="_blank">${shareLink}</a></p>`;
+        }
+
 
         document.getElementById('meSearch').addEventListener('input', calculateMatches);
         document.getElementById('partnerSearch').addEventListener('input', calculateMatches);
